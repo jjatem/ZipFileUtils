@@ -24,7 +24,7 @@ namespace ZipFileUtils
 
             string Base64EncodedFile = Convert.ToBase64String(bytesArray);
 
-            ZippedMemoryFile ZippedFileData = ZipFileUtilsLib.ZipFileUtils.GetZippedMemoryFile("AppSettings.json", Base64EncodedFile);
+            ZippedMemoryFile ZippedFileData = ZipFileUtilsLib.ZipFileUtils.ZipFileInMemory("AppSettings.json", Base64EncodedFile);
 
             if (ZippedFileData != null && ZippedFileData.ZippedFileInMemory != null)
             {

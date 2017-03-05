@@ -57,7 +57,7 @@ namespace ZipFileUtilsLib
             return rv;
         }
 
-        public static ZippedMemoryFile GetZippedMemoryFile(string FileName, string Base64EncodedContents)
+        public static ZippedMemoryFile ZipFileInMemory(string FileName, string Base64EncodedContents)
         {
             ZippedMemoryFile rv = new ZippedMemoryFile();
 
