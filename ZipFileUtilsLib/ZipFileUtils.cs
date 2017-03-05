@@ -14,8 +14,49 @@ namespace ZipFileUtilsLib
         public MemoryStream ZippedFileInMemory { get; set; }
     }
 
+    public class UnZippedMemoryFile
+    {
+        public string Filename { get; set; }
+        public MemoryStream UnZippedFileInMemory { get; set; }
+    }
+
     public class ZipFileUtils
     {
+        public static UnZippedMemoryFile UnZipFileInMemory(string ZippedFilename, string ZipFileBase64EncodedContents)
+        {
+            UnZippedMemoryFile rv = new UnZippedMemoryFile();
+            rv.UnZippedFileInMemory = new MemoryStream();
+
+            try
+            {
+                /*
+                 * Decode ZipFile Base64 Encoded Contents to Byte Array
+                 */
+                byte[] ZipDecodedFile = Convert.FromBase64String(ZipFileBase64EncodedContents);
+
+                var memoryZipFileToDecode = new MemoryStream(ZipDecodedFile);
+
+                /*
+                 * Use Zip Archive Class to Decompress Zip file
+                 */
+                using (var MyDecompressor = new ZipArchive(memoryZipFileToDecode, ZipArchiveMode.Read, true))
+                {
+                    if (MyDecompressor?.Entries.Count > 0)
+                    {
+                        ZipArchiveEntry UnZippedEntry = MyDecompressor.Entries.FirstOrDefault();
+                        UnZippedEntry.Open().CopyTo(rv.UnZippedFileInMemory);
+                        rv.Filename = UnZippedEntry.FullName;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException($"An error has ocurred Unzipped Base64 encoded Zip file with filename {ZippedFilename}. Error Message was: {ex.Message} ");
+            }
+
+            return rv;
+        }
+
         public static ZippedMemoryFile GetZippedMemoryFile(string FileName, string Base64EncodedContents)
         {
             ZippedMemoryFile rv = new ZippedMemoryFile();

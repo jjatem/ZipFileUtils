@@ -10,7 +10,7 @@ namespace ZipFileUtils
 {
     class Program
     {
-        static void Main(string[] args)
+        private static void ZipFileTest()
         {
             var FileReader = new StreamReader(@"C:\Temp\Zip\AppSettings.json");
 
@@ -32,7 +32,37 @@ namespace ZipFileUtils
                 ZippedFileData.ZippedFileInMemory.WriteTo(file);
                 file.Close();
             }
+        }
 
+        public static void UnzipSingleFileTest()
+        {
+            StreamReader FileReader = new StreamReader(@"C:\Temp\Zip\test.zip");
+
+            var bytesZipArray = default(byte[]);
+            using (var memstream = new MemoryStream())
+            {
+                FileReader.BaseStream.CopyTo(memstream);
+                bytesZipArray = memstream.ToArray();
+            }
+
+            string ZipBase64Contents = Convert.ToBase64String(bytesZipArray);
+
+            UnZippedMemoryFile UnzippedFileData = ZipFileUtilsLib.ZipFileUtils.UnZipFileInMemory(@"test.zip", ZipBase64Contents);
+
+            string Base64UnzippedEncoded = Convert.ToBase64String(UnzippedFileData.UnZippedFileInMemory.GetBuffer());
+        }
+
+        static void Main(string[] args)
+        {
+            /*
+             * First Zip a single file
+             */
+            ZipFileTest();
+
+            /*
+             * Unzip Zip Archive that contains a single file
+             */
+            UnzipSingleFileTest();
         }
     }
 }
